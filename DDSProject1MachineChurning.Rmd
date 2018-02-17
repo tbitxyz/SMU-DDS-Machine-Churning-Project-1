@@ -1,0 +1,93 @@
+---
+title: "DDSProject1MachineChurning"
+author: "YuMei Nitin"
+date: "February 16, 2018"
+output: html_document
+---
+# Import Data
+```{r importdata, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+dfbeers <- read.csv("E:\\University\\SMU\\Doing the Data Science\\Project1\\Beers.csv",header = TRUE)
+head(dfbeers)
+dim(dfbeers)
+
+dfbreweries <- read.csv("E:\\University\\SMU\\Doing the Data Science\\Project1\\Breweries.csv",header = TRUE)
+head(dfbreweries)
+dim(dfbreweries)
+```
+# Find out how many breweries each state 
+```{r number, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+Breweriesperstate <- aggregate(dfbreweries, 
+                               by = list(dfbreweries$State), 
+                               FUN = length)
+Breweriesperstate
+```
+# Merge Beers and Breweries table
+```{r merge, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+colnames(dfbeers)[colnames(dfbeers)=="Brewery_id"] <- "Brew_ID"
+colnames(dfbeers)[colnames(dfbeers)=="Name"] <- "Beer_Name"
+colnames(dfbreweries)[colnames(dfbreweries)=="Name"] <- "Brew_Name"
+
+merged<-merge(dfbeers,dfbreweries,by=c("Brew_ID"),all=FALSE)
+head(merged)
+tail(merged)
+dim(merged)
+```
+# Report number of NA in each merged table column
+```{r NAs, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+NApercolumn<-colSums(is.na(merged))
+```
+
+# Median alcohol content and international bitterness unit for each state
+```{r median, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+medianABVperstate = aggregate(data=merged, ABV ~ State, FUN=median)
+medianABVperstate
+
+medianIBUperstate = aggregate(data=merged, IBU ~ State, FUN=median)
+medianIBUperstate
+```
+# Making bar plot for IBU and AVB
+```{r plot1, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+barplot(medianIBUperstate$IBU, main="Median IBU per State", xlab="states",ylab="median IBU",las=2, col=rainbow(20), names.arg=medianIBUperstate$State, horiz=FALSE,cex.axis=0.5, cex.names=0.5)
+
+barplot(medianABVperstate$ABV, main="Median ABV per State", xlab="states",ylab="median ABV", las=2, col=rainbow(20), names.arg=medianABVperstate$State, horiz=FALSE,cex.axis=0.5, cex.names=0.5)
+```
+# Find the max ABV and IBU
+```{r max, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+MergedsortABV<-arrange(merged %>% filter(ABV>0.1), desc(ABV))
+head(MergedsortABV,n=1)
+
+MergedsortIBU<-arrange(merged %>% filter(IBU>120), desc(IBU))
+head(MergedsortIBU,n=1)
+```
+# Statistics for ABV
+```{r ABV stats, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+summary(merged$ABV)
+sd(merged$ABV,na.rm=TRUE)
+```
+# Plot IBU and AVB relationship
+```{r plot2, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+attach(merged)
+plot(IBU, ABV, main="Scatterplot IBU vs. ABV",  	xlab="International Bitterness Units of the beer", ylab="Alcohol by volume of the beer", pch=19)
+abline(lm(ABV~IBU), col="red") # regression line (y~x) 
+
+```
+
