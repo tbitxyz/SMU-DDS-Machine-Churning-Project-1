@@ -40,6 +40,7 @@ Breweriesperstate <- aggregate(dfbreweries,
                                by = list(dfbreweries$State), 
                                FUN = length)
 Breweriesperstate
+write.csv(Breweriesperstate, "Breweriesperstate.csv")
 ```
 Please see table above, it is a alphabetical list of states with last column show number of breweries in that state. Colorado is the winner with 47 breweries, followed by California with 39 brewies.
 
@@ -68,6 +69,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 NApercolumn<-colSums(is.na(merged))
 NApercolumn
+write.csv(NApercolumn, "NApercolumn.csv")
 ```
 In deed, there are some NAs in our data frame. Please see table above, details each variable in merged data frame NA quantities. 
 
@@ -80,10 +82,12 @@ medianABVperstate1 = aggregate(data=merged, ABV ~ State, FUN=median)
 library(dplyr)
 medianABVperstate<-arrange(medianABVperstate1,desc(ABV))
 medianABVperstate
+write.csv(medianABVperstate, "medianABVperstate.csv")
 
 medianIBUperstate1 = aggregate(data=merged, IBU ~ State, FUN=median)
 medianIBUperstate<-arrange(medianIBUperstate1,desc(IBU))
 medianIBUperstate
+write.csv(medianIBUperstate, "medianIBUperstate.csv")
 
 ```
 Please see above two tables for IBU and ABV per state median.
@@ -107,9 +111,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 MergedsortABV<-arrange(merged %>% filter(ABV>0.1), desc(ABV))
 head(MergedsortABV,n=1)
+write.csv(MergedsortABV, "MergedsortABV.csv")
 
 MergedsortIBU<-arrange(merged %>% filter(IBU>120), desc(IBU))
 head(MergedsortIBU,n=1)
+write.csv(MergedsortIBU, "MergedsortIBU.csv")
 ```
 Colorado is the winner for alcohol content, ABV=0.128. 
 Oregon is the winner for bitterness, IBU=138!

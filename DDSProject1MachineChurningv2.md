@@ -141,6 +141,10 @@ Breweriesperstate
 ## 50      WV       1    1    1     1
 ## 51      WY       4    4    4     4
 ```
+
+```r
+write.csv(Breweriesperstate, "Breweriesperstate.csv")
+```
 Please see table above, it is a alphabetical list of states with last column show number of breweries in that state. Colorado is the winner with 47 breweries, followed by California with 39 brewies.
 
 # Merge Beers and Breweries table
@@ -236,6 +240,10 @@ NApercolumn
 ## Brew_Name      City     State 
 ##         0         0         0
 ```
+
+```r
+write.csv(NApercolumn, "NApercolumn.csv")
+```
 In deed, there are some NAs in our data frame. Please see table above, details each variable in merged data frame NA quantities. 
 
 # Median alcohol content and international bitterness unit for each state
@@ -326,6 +334,8 @@ medianABVperstate
 ```
 
 ```r
+write.csv(medianABVperstate, "medianABVperstate.csv")
+
 medianIBUperstate1 = aggregate(data=merged, IBU ~ State, FUN=median)
 medianIBUperstate<-arrange(medianIBUperstate1,desc(IBU))
 medianIBUperstate
@@ -384,6 +394,10 @@ medianIBUperstate
 ## 49    KS 20.0
 ## 50    WI 19.0
 ```
+
+```r
+write.csv(medianIBUperstate, "medianIBUperstate.csv")
+```
 Please see above two tables for IBU and ABV per state median.
 
 # Making bar plot for median IBU and AVB
@@ -423,6 +437,8 @@ head(MergedsortABV,n=1)
 ```
 
 ```r
+write.csv(MergedsortABV, "MergedsortABV.csv")
+
 MergedsortIBU<-arrange(merged %>% filter(IBU>120), desc(IBU))
 head(MergedsortIBU,n=1)
 ```
@@ -434,6 +450,10 @@ head(MergedsortIBU,n=1)
 ## 1 American Double / Imperial IPA     12 Astoria Brewing Company Astoria
 ##   State
 ## 1    OR
+```
+
+```r
+write.csv(MergedsortIBU, "MergedsortIBU.csv")
 ```
 Colorado is the winner for alcohol content, ABV=0.128. 
 Oregon is the winner for bitterness, IBU=138!
