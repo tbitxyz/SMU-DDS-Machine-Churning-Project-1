@@ -1,0 +1,138 @@
+---
+title: "Craft Beer New Business Opportunities"
+author: "YuMei & Nitin"
+date: "February 16, 2018"
+output: html_document
+---
+# Introduction
+Machine Churning consulting is a new startup, our mission is to provide business intelligence to convert data into information and knowledge.  Integrating large volumes of data with advanced analytics techniques, modern computer technology, and domain expertise within specific business sectors, our data analytic service looking inside the crystal ball of Big Data to predict the future of their enterprise.
+
+Cobell Entertainment is one of the largest brewery and restaurant corporation in the US. They have been entertaining customers for over 50 years. Recent market down turn created difficult business environment for them, management is looking for innovative ideas on all front to create new revenue stream. They have contracted Machine Churning consulting on a beer and brewery data analytic project. 
+
+There are two historical data files are provided as the analysis input. Please see Readme for details.
+
+This document provides explanation of analysis process and result, along with recommendations.
+
+# Import Data
+We've decide to utilize R for this project. This segment simply takes raw data csv files into R studio, and making sure both files are imported properly. 
+```{r importdata, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+dfbeers <- read.csv("E:\\University\\SMU\\Doing the Data Science\\Project1\\Beers.csv",header = TRUE)
+head(dfbeers)
+dim(dfbeers)
+
+dfbreweries <- read.csv("E:\\University\\SMU\\Doing the Data Science\\Project1\\Breweries.csv",header = TRUE)
+head(dfbreweries)
+dim(dfbreweries)
+```
+Beers.csv has 2410 data samples and 7 variables. Breweries.csv has 558 data samples and 4 variables.
+
+# Find out how many breweries each state 
+This segment answers the question of how many breweries in each state?
+
+```{r number, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+Breweriesperstate <- aggregate(dfbreweries, 
+                               by = list(dfbreweries$State), 
+                               FUN = length)
+Breweriesperstate
+```
+Please see table above, it is a alphabetical list of states with last column show number of breweries in that state. Colorado is the winner with 47 breweries, followed by California with 39 brewies.
+
+# Merge Beers and Breweries table
+For convinence of rest of anlaysis, we merge the two csv files together. Notice the common variable breweries ID, but the label in both files is different. We have to align both name as "Brew_ID" before we can merge the files. The merged file or data frame is merged.
+
+```{r merge, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+colnames(dfbeers)[colnames(dfbeers)=="Brewery_id"] <- "Brew_ID"
+colnames(dfbeers)[colnames(dfbeers)=="Name"] <- "Beer_Name"
+colnames(dfbreweries)[colnames(dfbreweries)=="Name"] <- "Brew_Name"
+
+merged<-merge(dfbeers,dfbreweries,by=c("Brew_ID"),all=FALSE)
+head(merged)
+tail(merged)
+dim(merged)
+```
+Please see above display for first 6 and last 6 row of merged data frame, along with merged file dimension check. This checking ensures we have merged file successfully.
+
+# Report number of NAs in each merged table column
+It is important to understand if the data is clean or not, for example if any NA exist. if it does, we can apply approperiate R options to avoid mistake or skewed analytic result.
+
+```{r NAs, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+NApercolumn<-colSums(is.na(merged))
+NApercolumn
+```
+In deed, there are some NAs in our data frame. Please see table above, details each variable in merged data frame NA quantities. 
+
+# Median alcohol content and international bitterness unit for each state
+Here we take a look into median value of alcolhol content and international bitterness per state. 
+```{r median, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+medianABVperstate = aggregate(data=merged, ABV ~ State, FUN=median)
+medianABVperstate
+
+medianIBUperstate = aggregate(data=merged, IBU ~ State, FUN=median)
+medianIBUperstate
+```
+Please see above two tables for IBU and ABV per state median.
+
+# Making bar plot for median IBU and AVB
+Creating bar chart for better visual understanding of per state IBU and ABV median. 
+```{r plot1, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+barplot(medianIBUperstate$IBU, main="Median IBU per State", xlab="states",ylab="median IBU",las=2, col=rainbow(20), names.arg=medianIBUperstate$State, horiz=FALSE,cex.axis=0.5, cex.names=0.5)
+
+barplot(medianABVperstate$ABV, main="Median ABV per State", xlab="states",ylab="median ABV", las=2, col=rainbow(20), names.arg=medianABVperstate$State, horiz=FALSE,cex.axis=0.5, cex.names=0.5)
+```
+Please see the two bar chart above, look like the alcolhol content per state median does not vary much, this is likely due to the regulation in place. The bitterness does vary as much as double. Colorado is the winner for alcohol content median, ABV(median)=0.128.
+
+# Find the max ABV and IBU
+We sort the merged data frame by IBU and ABV to find the winner.
+```{r max, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+MergedsortABV<-arrange(merged %>% filter(ABV>0.1), desc(ABV))
+head(MergedsortABV,n=1)
+
+MergedsortIBU<-arrange(merged %>% filter(IBU>120), desc(IBU))
+head(MergedsortIBU,n=1)
+```
+Colorado is the winner for alcohol content, ABV=0.128. 
+Oregon is the winner for bitterness, IBU=138!
+
+# Statistics for ABV
+We now zoom into statistics of ABV.
+```{r ABV stats, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+summary(merged$ABV)
+sd(merged$ABV,na.rm=TRUE)
+```
+We have ABV(mean)=0.06, ABV(median)=0.056, ABV(sd)=0.014, ABV(min)=0.001, ABV(max)=0.128. 
+
+# Plot IBU and AVB relationship
+Create scatter plot to see if any relationship we can draw between bitterness and alcolhol content.
+```{r plot2, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+attach(merged)
+plot(IBU, ABV, main="Scatterplot IBU vs. ABV",  	xlab="International Bitterness Units of the beer", ylab="Alcohol by volume of the beer", pch=19)
+abline(lm(ABV~IBU), col="red") # regression line (y~x) 
+
+```
+As we can visually observe from the scatter plot and the linear regression line, there is a visible relationship between IBU and ABV. Although the regression line is not steep, but does show as bitterness increase, there is visible increase on alcohol content as well. 
+
+Of course, from ecademic stand point, the analysis was done on observation data provided. Given we have not validated how the data is collected and its validaty, we can only say that the result applies to data input population.
+
+From practical stand point, we assume input data are valid from client and it does represent overall market situation, it is a good random collections of data sample. Therefore, analysis result is valid. 
+
+We will feedback to Cobell Entertainment with this document along with a slide deck to summarize our findings, and provide some recommendations. 
+
