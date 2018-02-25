@@ -7,6 +7,8 @@ Nitin Agarwal 	nitina@mail.smu.edu
 
 The rest of the readme is written as if the team is executing a client data analytic project scenario, for the purpose of course requirement.
 
+https://github.com/tbitxyz/SMU-DDS-Machine-Churning-Project-1
+
 # Introduction
 Machine Churning consulting is a new startup, our mission is to provide business intelligence to convert data into information and knowledge.  Integrating large volumes of data with advanced analytics techniques, modern computer technology, and domain expertise within specific business sectors, our data analytic service looking inside the crystal ball of Big Data to predict the future of their enterprise.
 
