@@ -36,9 +36,13 @@ This segment answers the question of how many breweries in each state?
 ```{r number, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 
-Breweriesperstate <- aggregate(dfbreweries, 
+Breweriesperstate1 <- aggregate(dfbreweries, 
                                by = list(dfbreweries$State), 
                                FUN = length)
+Breweriesperstate2 = subset(Breweriesperstate1, select = -c(Name,City,State) )
+
+library(dplyr)
+Breweriesperstate <- arrange(Breweriesperstate2,desc(Brew_ID))
 Breweriesperstate
 write.csv(Breweriesperstate, "Breweriesperstate.csv")
 ```

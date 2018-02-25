@@ -81,65 +81,89 @@ This segment answers the question of how many breweries in each state?
 ```r
 knitr::opts_chunk$set(echo = TRUE)
 
-Breweriesperstate <- aggregate(dfbreweries, 
+Breweriesperstate1 <- aggregate(dfbreweries, 
                                by = list(dfbreweries$State), 
                                FUN = length)
+Breweriesperstate2 = subset(Breweriesperstate1, select = -c(Name,City,State) )
+
+library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
+Breweriesperstate <- arrange(Breweriesperstate2,desc(Brew_ID))
 Breweriesperstate
 ```
 
 ```
-##    Group.1 Brew_ID Name City State
-## 1       AK       7    7    7     7
-## 2       AL       3    3    3     3
-## 3       AR       2    2    2     2
-## 4       AZ      11   11   11    11
-## 5       CA      39   39   39    39
-## 6       CO      47   47   47    47
-## 7       CT       8    8    8     8
-## 8       DC       1    1    1     1
-## 9       DE       2    2    2     2
-## 10      FL      15   15   15    15
-## 11      GA       7    7    7     7
-## 12      HI       4    4    4     4
-## 13      IA       5    5    5     5
-## 14      ID       5    5    5     5
-## 15      IL      18   18   18    18
-## 16      IN      22   22   22    22
-## 17      KS       3    3    3     3
-## 18      KY       4    4    4     4
-## 19      LA       5    5    5     5
-## 20      MA      23   23   23    23
-## 21      MD       7    7    7     7
-## 22      ME       9    9    9     9
-## 23      MI      32   32   32    32
-## 24      MN      12   12   12    12
-## 25      MO       9    9    9     9
-## 26      MS       2    2    2     2
-## 27      MT       9    9    9     9
-## 28      NC      19   19   19    19
-## 29      ND       1    1    1     1
-## 30      NE       5    5    5     5
-## 31      NH       3    3    3     3
-## 32      NJ       3    3    3     3
-## 33      NM       4    4    4     4
-## 34      NV       2    2    2     2
-## 35      NY      16   16   16    16
-## 36      OH      15   15   15    15
-## 37      OK       6    6    6     6
-## 38      OR      29   29   29    29
-## 39      PA      25   25   25    25
-## 40      RI       5    5    5     5
-## 41      SC       4    4    4     4
-## 42      SD       1    1    1     1
-## 43      TN       3    3    3     3
-## 44      TX      28   28   28    28
-## 45      UT       4    4    4     4
-## 46      VA      16   16   16    16
-## 47      VT      10   10   10    10
-## 48      WA      23   23   23    23
-## 49      WI      20   20   20    20
-## 50      WV       1    1    1     1
-## 51      WY       4    4    4     4
+##    Group.1 Brew_ID
+## 1       CO      47
+## 2       CA      39
+## 3       MI      32
+## 4       OR      29
+## 5       TX      28
+## 6       PA      25
+## 7       MA      23
+## 8       WA      23
+## 9       IN      22
+## 10      WI      20
+## 11      NC      19
+## 12      IL      18
+## 13      NY      16
+## 14      VA      16
+## 15      FL      15
+## 16      OH      15
+## 17      MN      12
+## 18      AZ      11
+## 19      VT      10
+## 20      ME       9
+## 21      MO       9
+## 22      MT       9
+## 23      CT       8
+## 24      AK       7
+## 25      GA       7
+## 26      MD       7
+## 27      OK       6
+## 28      IA       5
+## 29      ID       5
+## 30      LA       5
+## 31      NE       5
+## 32      RI       5
+## 33      HI       4
+## 34      KY       4
+## 35      NM       4
+## 36      SC       4
+## 37      UT       4
+## 38      WY       4
+## 39      AL       3
+## 40      KS       3
+## 41      NH       3
+## 42      NJ       3
+## 43      TN       3
+## 44      AR       2
+## 45      DE       2
+## 46      MS       2
+## 47      NV       2
+## 48      DC       1
+## 49      ND       1
+## 50      SD       1
+## 51      WV       1
 ```
 
 ```r
@@ -254,26 +278,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 medianABVperstate1 = aggregate(data=merged, ABV ~ State, FUN=median)
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 medianABVperstate<-arrange(medianABVperstate1,desc(ABV))
 medianABVperstate
 ```
